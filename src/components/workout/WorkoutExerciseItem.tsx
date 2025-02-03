@@ -1,7 +1,7 @@
 import React from "react";
 import { Exercise } from "./types";
 import { Progress } from "@/components/ui/progress";
-import { Check } from "lucide-react";
+import { Check, Pause } from "lucide-react";
 
 interface WorkoutExerciseItemProps {
   exercise: Exercise;
@@ -33,6 +33,9 @@ export const WorkoutExerciseItem: React.FC<WorkoutExerciseItemProps> = ({ exerci
         </div>
         {exercise.isCompleted && (
           <Check className="w-6 h-6 text-green-500 ml-4" />
+        )}
+        {exercise.isActive && !exercise.isCompleted && (
+          <Pause className="w-6 h-6 text-blue-500 ml-4" />
         )}
       </div>
       {exercise.isActive && typeof exercise.progress === 'number' && (

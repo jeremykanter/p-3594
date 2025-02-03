@@ -5,6 +5,7 @@ export interface Exercise {
   isActive?: boolean;
   progress?: number;
   isCompleted?: boolean;
+  isPaused?: boolean;
 }
 
 export interface WorkoutSection {
