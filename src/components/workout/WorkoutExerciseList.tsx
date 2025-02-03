@@ -34,7 +34,7 @@ export const WorkoutExerciseList: React.FC<WorkoutExerciseListProps> = ({ exerci
         if (progress >= 100) {
           clearInterval(interval);
           setExercises(prev => prev.map((ex, i) => 
-            i === index ? { ...ex, isActive: false, progress: undefined } : ex
+            i === index ? { ...ex, isActive: false, progress: undefined, isCompleted: true } : ex
           ));
         }
       }, 100);

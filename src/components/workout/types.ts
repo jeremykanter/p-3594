@@ -4,6 +4,7 @@ export interface Exercise {
   imageUrl?: string;
   isActive?: boolean;
   progress?: number;
+  isCompleted?: boolean;
 }
 
 export interface WorkoutSection {
