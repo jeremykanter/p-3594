@@ -11,6 +11,7 @@ export const WorkoutExerciseList: React.FC<WorkoutExerciseListProps> = ({ exerci
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number | null>(null);
   const elapsedTimeRef = useRef<number>(0);
+  const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const startExercise = (index: number) => {
     const currentExercise = exercises[index];
@@ -36,24 +37,51 @@ export const WorkoutExerciseList: React.FC<WorkoutExerciseListProps> = ({ exerci
       return;
     }
 
-    // Start new exercise
-    const updatedExercises = exercises.map((ex, i) => ({
+    // Start countdown before exercise
+    let countdown = 5;
+    setExercises(prev => prev.map((ex, i) => ({
       ...ex,
-      isActive: i === index,
-      progress: i === index ? 0 : ex.progress,
-      isPaused: false
-    }));
-    setExercises(updatedExercises);
+      countdown: i === index ? countdown : undefined
+    })));
 
-    // Parse duration to get seconds
-    const durationMatch = exercises[index].duration.match(/(\d+)/);
-    const durationInSeconds = durationMatch ? parseInt(durationMatch[1]) : 0;
-    
-    if (durationInSeconds > 0) {
-      startTimeRef.current = Date.now();
-      elapsedTimeRef.current = 0;
-      startTimer(index, durationInSeconds);
+    if (countdownIntervalRef.current) {
+      clearInterval(countdownIntervalRef.current);
     }
+
+    countdownIntervalRef.current = setInterval(() => {
+      countdown--;
+      setExercises(prev => prev.map((ex, i) => ({
+        ...ex,
+        countdown: i === index ? countdown : undefined
+      })));
+
+      if (countdown <= 0) {
+        if (countdownIntervalRef.current) {
+          clearInterval(countdownIntervalRef.current);
+          countdownIntervalRef.current = null;
+        }
+
+        // Start new exercise
+        const updatedExercises = exercises.map((ex, i) => ({
+          ...ex,
+          isActive: i === index,
+          progress: i === index ? 0 : ex.progress,
+          isPaused: false,
+          countdown: undefined
+        }));
+        setExercises(updatedExercises);
+
+        // Parse duration to get seconds
+        const durationMatch = exercises[index].duration.match(/(\d+)/);
+        const durationInSeconds = durationMatch ? parseInt(durationMatch[1]) : 0;
+        
+        if (durationInSeconds > 0) {
+          startTimeRef.current = Date.now();
+          elapsedTimeRef.current = 0;
+          startTimer(index, durationInSeconds);
+        }
+      }
+    }, 1000);
   };
 
   const startTimer = (index: number, durationInSeconds?: number) => {

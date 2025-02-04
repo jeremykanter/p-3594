@@ -37,6 +37,9 @@ export const WorkoutExerciseItem: React.FC<WorkoutExerciseItemProps> = ({ exerci
         {exercise.isActive && !exercise.isCompleted && (
           <Pause className="w-6 h-6 text-blue-500 ml-4" />
         )}
+        {typeof exercise.countdown === 'number' && (
+          <span className="text-2xl font-bold text-blue-500 ml-4">{exercise.countdown}</span>
+        )}
       </div>
       {exercise.isActive && typeof exercise.progress === 'number' && (
         <div className="mt-3">

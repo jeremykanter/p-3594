@@ -6,6 +6,7 @@ export interface Exercise {
   progress?: number;
   isCompleted?: boolean;
   isPaused?: boolean;
+  countdown?: number;
 }
 
 export interface WorkoutSection {
