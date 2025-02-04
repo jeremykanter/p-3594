@@ -23,16 +23,18 @@ export const WorkoutExerciseList: React.FC<WorkoutExerciseListProps> = ({ exerci
       ));
 
       if (currentExercise.isPaused) {
-        // Resume
-        startTimeRef.current = Date.now() - elapsedTimeRef.current;
-        startTimer(index);
+        // Resume - Start fresh timer
+        startTimeRef.current = Date.now();
+        elapsedTimeRef.current = 0;
+        const durationMatch = exercises[index].duration.match(/(\d+)/);
+        const durationInSeconds = durationMatch ? parseInt(durationMatch[1]) : 0;
+        startTimer(index, durationInSeconds);
       } else {
         // Pause
         if (intervalRef.current) {
           clearInterval(intervalRef.current);
           intervalRef.current = null;
         }
-        elapsedTimeRef.current = Date.now() - (startTimeRef.current || 0);
       }
       return;
     }
