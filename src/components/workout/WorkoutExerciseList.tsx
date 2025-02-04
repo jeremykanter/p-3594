@@ -74,9 +74,22 @@ export const WorkoutExerciseList: React.FC<WorkoutExerciseListProps> = ({ exerci
           clearInterval(intervalRef.current);
           intervalRef.current = null;
         }
-        setExercises(prev => prev.map((ex, i) => 
-          i === index ? { ...ex, isActive: false, progress: undefined, isCompleted: true } : ex
-        ));
+        
+        // Mark current exercise as completed and find next uncompleted exercise
+        setExercises(prev => {
+          const updatedExercises = prev.map((ex, i) => 
+            i === index ? { ...ex, isActive: false, progress: undefined, isCompleted: true } : ex
+          );
+          
+          // Find the next uncompleted exercise
+          const nextIndex = updatedExercises.findIndex((ex, i) => i > index && !ex.isCompleted);
+          if (nextIndex !== -1) {
+            // Start the next exercise after a short delay
+            setTimeout(() => startExercise(nextIndex), 500);
+          }
+          
+          return updatedExercises;
+        });
       }
     }, 100);
   };
